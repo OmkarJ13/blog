@@ -1,0 +1,66 @@
+---
+title: "Understanding Focus in Javascript"
+description: "My understanding of how focus works on the web — what it is, how to control it with JavaScript, and how to make sure it works well for everyone, especially keyboard users."
+image: "../assets/understanding-focus-in-javascript.jpg"
+createdAt: 05-26-2024
+draft: false
+tags:
+  - javascript
+---
+
+
+### Introduction
+
+In web development, ensuring seamless user interaction with your website is crucial. A key aspect of this interaction is the ability to focus on elements, allowing smooth navigation and accessibility. This guide explores the basics of focus in JavaScript, helping you understand its mechanics and manage focus for accessibility. By mastering these concepts, you'll be able to create web applications that are not only functional but also accessible and user-friendly.
+
+### Understanding Focus
+
+When you click on an interactive element in a webpage, that element gets focused. In the focused state, all keyboard events are directed to that particular element. This is what lets you type in an input field after clicking on it, use enter/space to press a button, etc. When using a keyboard to navigate, you focus on elements without clicking. As you navigate through the webpage, each element gets focused shown by the focus ring around it. Also, focus can be programmatically transferred to an element using the JavaScript [`HTMLElement.focus()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus) method.
+
+### Focusable Elements
+
+By default, only interactive elements can be focused; non-interactive elements like [`<h1>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements) and [`<p>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/p) cannot be focused as they are not meant for interactivity. You can make non-interactive elements focusable by inserting them in the tab order. What is the tab order? We will explore this in the accessibility section of this blog.
+
+Aside from non-interactive elements, hidden elements also cannot be focused. When you hide a [`<button>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button) using `display: none` or `visibility: hidden`, that element will no longer be able to receive focus. However, if you use `opacity: 0` or `width: 0` instead, it will retain its ability to receive focus whilst remaining invisible.
+
+### Styling Focused Elements
+
+When an element is focused, you need to inform the focused state to the user. By default, the browser shows a focus ring on all focused elements.
+
+The [`:focus`](https://developer.mozilla.org/en-US/docs/Web/CSS/:focus) pseudo-class can be used to style all focused elements. The [`:focus-within`](https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-within) pseudo-selector extends this functionality further, which applies not only when the selected element is focused, but also when any of its children currently have the focus.
+
+The [`:focus-visible`](https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible) pseudo-class is special, it applies while an element matches the [`:focus`](https://developer.mozilla.org/en-US/docs/Web/CSS/:focus) pseudo-class and the UA ([User Agent](https://developer.mozilla.org/en-US/docs/Glossary/User_agent)) determines via heuristics that the focus should be made evident on the element. Mainly, it is used to provide focus indicators only when it would be most helpful to the user. For instance, when a button is clicked using a pointing device, the focus is generally not visually indicated, but when a text box needing user input has focus, focus is indicated. While focus styles are necessary when users navigate with the keyboard or when focus is managed via scripts, they are not required when users set focus with a pointing device like a mouse or finger unless the element needs ongoing user attention.
+
+Newer browsers have now started following the same set of heuristics as [`:focus-visible`](https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible) to control the visibility of the default focus ring instead of directly showing it for all focused elements.
+
+### Accessibility Considerations
+
+To make sure your website is accessible to majority of your users, you need to manage focus efficiently. Here are a few common accessibility concerns with respect to focus, and how you can address them effectively.
+
+**1. Make sure that the focus is visibly indicated to keyboard users.**
+
+You should never remove the default focus ring using `outline: 0` or `outline: none` unless you are providing your own custom focus ring styles.
+
+Doing this is bad news for keyboard-only users, because the focus will not be visibly indicated at all, making the site completely inaccessible to them.
+
+**2. The tab order should match the visual order of elements in the DOM.**
+
+Tab order is the sequence in which the elements are focused when navigating using a keyboard. By default, the tab order matches the order of elements in the DOM. You need to ensure that the visual order of elements in the DOM matches the tab order to provide seamless user experience.
+
+You can change the tab order or add new elements to it using the [`tabindex`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex) attribute. Setting tab index with a value of 0, makes the element focusable and adds it in the tab order.
+
+If one element has a higher tab index value than another, it will get focused first. However, it is generally not recommended to use tab index values greater than 1 as it becomes difficult to manage the order with a large number of elements. You should instead write the markup properly such that the DOM order is accurate.
+
+Setting a value of -1 for tab index makes the element focusable but not added in the tab order, thus becoming inaccessible via keyboard. This is useful for focusing non-interactive elements for screen readers to announce without adding them in the tab order.
+
+**3. The focus does not get lost or trapped with no way out when navigating with a keyboard or screen reader.**
+
+When accessing the webpage using a keyboard or screen reader, you need to ensure that the focus does not get lost in elements that the user should not see or access.
+
+As we saw in a previous section, some hidden elements can still receive focus. If unintentional, this can lead the user to get lost in functionality that they shouldn't be able to access. You need to make sure that the focus is managed properly on hidden elements and only the content that is visible should be focusable.
+
+One of the common pitfalls when using modality in webpages is that the focus is not managed properly, this can lead to the user being able to focus on the elements outside the modal, essentially lost from the main content. You can trap the focus inside the modal element to resolve this issue. Focus trapping is achieved by cycling the focus to the first element when it reaches the last one and vice versa. However, there should be a way for the user to get out of this focus trap by having a close button inside the modal or providing a shortcut key. Escape key is generally used to close the modal in such cases.
+
+### Conclusion
+
+Mastering focus in JavaScript is essential for creating accessible and user-friendly web applications. Understanding how focus works and its intricacies can allow you to manage it effectively, significantly enhancing the user experience. Keep these principles in mind as you develop and maintain your web projects to create a more accessible and efficient user interface.

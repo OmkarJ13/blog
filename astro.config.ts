@@ -10,7 +10,7 @@ import { spectreDark } from './src/ec-theme';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://spectre.louisescher.dev',
+  site: 'https://omkarj.com',
   output: 'static',
   integrations: [
     expressiveCode({
@@ -19,15 +19,13 @@ export default defineConfig({
     mdx(),
     sitemap(),
     spectre({
-      name: 'Spectre',
+      name: 'Omkar Joshi',
       openGraph: {
         home: {
-          title: 'Spectre',
-          description: 'A minimalistic theme for Astro.'
+          title: 'Omkar Joshi',
         },
         blog: {
           title: 'Blog',
-          description: 'News and guides for Spectre.'
         },
         projects: {
           title: 'Projects'
