@@ -7,6 +7,10 @@
   --primary-lightest: #c2a8fd;
 }
 
+.pfp {
+  border-radius: 9999px;
+}
+
 .overview-list {
   list-style-type: none;
   padding: 0;
