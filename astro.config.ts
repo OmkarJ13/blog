@@ -5,13 +5,13 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import spectre from './package/src';
 
-import node from '@astrojs/node';
+import vercel from '@astrojs/vercel';
 import { spectreDark } from './src/ec-theme';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://omkarj.com',
-  output: 'static',
+  output: 'server',
   integrations: [
     expressiveCode({
       themes: [spectreDark],
@@ -44,7 +44,5 @@ export default defineConfig({
       }
     })
   ],
-  adapter: node({
-    mode: 'standalone'
-  })
+  adapter: vercel()
 });
