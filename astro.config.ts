@@ -5,7 +5,6 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import spectre from './package/src';
 
-import vercel from '@astrojs/vercel';
 import { spectreDark } from './src/ec-theme';
 
 // https://astro.build/config
@@ -44,5 +43,4 @@ export default defineConfig({
       }
     })
   ],
-  adapter: vercel()
 });
