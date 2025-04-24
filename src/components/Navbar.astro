@@ -100,7 +100,6 @@ const path = Astro.url.pathname;
       e.target.dataset.loaded = 'true';
 
       window.pagefind = await import("/pagefind/pagefind.js");
-      window.pagefind.init();
     }
 
     results.innerHTML = '';
