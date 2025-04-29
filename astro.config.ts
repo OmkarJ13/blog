@@ -31,10 +31,10 @@ export default defineConfig({
         }
       },
       giscus: {
-        repository: 'louisescher/spectre',
-        repositoryId: 'R_kgDONjm3ig',
+        repository: 'OmkarJ13/blog',
+        repositoryId: 'R_kgDOOd-f7A',
         category: 'General',
-        categoryId: 'DIC_kwDONjm3is4ClmBF',
+        categoryId: 'DIC_kwDOOd-f7M4Cpmep',
         mapping: 'pathname',
         strict: true,
         reactionsEnabled: true,
