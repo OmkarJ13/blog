@@ -9,7 +9,7 @@ import { spectreDark } from './src/ec-theme';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://omkarj.com',
+  site: 'https://www.omkarj.com',
   output: 'static',
   integrations: [
     expressiveCode({
