@@ -46,77 +46,104 @@ export const getStaticPaths = (async () => {
 const { Content, headings } = await render(post);
 ---
 
-<Layout
-  title={post.data.title}
-  description={post.data.description}
-  image={post.data.image}
-  article={{
-    createdAt: post.data.createdAt,
-    updatedAt: post.data.updatedAt,
-  }}
->
-  <div class="left" slot="left">
-    <Card class="toc-card">
-      <h2 class="no-mt">Table of contents</h2>
-      <ol>
-        <li class="toc-li">
-          <a href={`#_top`} class="active">{post.data.title}</a>
-        </li>
-        {headings.map((heading, i) => (
-          <li class="toc-li" data-depth={heading.depth}>
-            <a href={`#${heading.slug}`}>{heading.text}</a>
+<div class="post">
+  <Layout
+    title={post.data.title}
+    description={post.data.description}
+    image={post.data.image}
+    article={{
+      createdAt: post.data.createdAt,
+      updatedAt: post.data.updatedAt,
+    }}
+  >
+    <div class="left" slot="left">
+      <Card class="toc-card">
+        <h2 class="no-mt">Table of contents</h2>
+        <ol>
+          <li class="toc-li">
+            <a href={`#_top`} class="active">{post.data.title}</a>
           </li>
-        ))}
-      </ol>
-    </Card>
-  </div>
-  <article slot="right" data-pagefind-body>
-    <Card>
-      <div class="article-header" id="_top" data-pagefind-ignore>
-        {post.data.image && <ImageGlow quality={100} class="article-image" src={post.data.image} alt={post.data.title} />}
-        <div class="header">
-          <div>
-            <h1 class="no-mt article-h1">{post.data.title}</h1>
-          </div>
-          <div class="article-info">
-            <span>{post.data.createdAt.toLocaleDateString()}</span>
-            <span>|</span>
-            <span>{timeToRead(post)} minute{timeToRead(post) === 1 ? "" : "s"} to read</span>
-          </div>
-        </div>
-      </div>
-      <Content />
-      <hr class="end-of-article" />
-      <a href="/blog" class="block-link" data-pagefind-ignore>← Back to blog</a>
-    </Card>
-    {giscus && (
-      <Card>
-        <div class="comments" data-pagefind-ignore>
-          <script
-            is:inline
-            src="https://giscus.app/client.js"
-            data-repo={giscus.repository}
-            data-repo-id={giscus.repositoryId}
-            data-category={giscus.category}
-            data-category-id={giscus.categoryId}
-            data-mapping={giscus.mapping}
-            data-strict={giscus.strict === true ? "1" : "0"}
-            data-reactions-enabled={giscus.reactionsEnabled === true ? "1" : "0"}
-            data-emit-metadata={giscus.emitMetadata === true ? "1" : "0"}
-            data-input-position={giscus.commentsInput}
-            data-theme={giscus.theme || 'preferred_color_scheme'}
-            data-lang={giscus.lang}
-            data-loading="lazy"
-            crossorigin="anonymous"
-            async
-          />
-        </div>
+          {headings.map((heading, i) => (
+            <li class="toc-li" data-depth={heading.depth}>
+              <a href={`#${heading.slug}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ol>
       </Card>
-    )}
-  </article>
-</Layout>
+    </div>
+    <article slot="right" data-pagefind-body>
+      <Card>
+        <div class="article-header" id="_top" data-pagefind-ignore>
+          {post.data.image && <ImageGlow quality={100} class="article-image" src={post.data.image} alt={post.data.title} />}
+          <div class="header">
+            <div>
+              <h1 class="no-mt article-h1">{post.data.title}</h1>
+            </div>
+            <div class="article-info">
+              <span>{post.data.createdAt.toLocaleDateString()}</span>
+              <span>|</span>
+              <span>{timeToRead(post)} minute{timeToRead(post) === 1 ? "" : "s"} to read</span>
+            </div>
+          </div>
+        </div>
+        <Content />
+        <hr class="end-of-article" />
+        <a href="/blog" class="block-link" data-pagefind-ignore>← Back to blog</a>
+      </Card>
+      {giscus && (
+        <Card>
+          <div class="comments" data-pagefind-ignore>
+            <script
+              is:inline
+              src="https://giscus.app/client.js"
+              data-repo={giscus.repository}
+              data-repo-id={giscus.repositoryId}
+              data-category={giscus.category}
+              data-category-id={giscus.categoryId}
+              data-mapping={giscus.mapping}
+              data-strict={giscus.strict === true ? "1" : "0"}
+              data-reactions-enabled={giscus.reactionsEnabled === true ? "1" : "0"}
+              data-emit-metadata={giscus.emitMetadata === true ? "1" : "0"}
+              data-input-position={giscus.commentsInput}
+              data-theme={giscus.theme || 'preferred_color_scheme'}
+              data-lang={giscus.lang}
+              data-loading="lazy"
+              crossorigin="anonymous"
+              async
+            />
+          </div>
+        </Card>
+      )}
+    </article>
+  </Layout>
+</div>
 <script src="../../scripts/toc.ts" />
 <style is:global>
+  .post .layout-grid {
+    grid-template-columns: 5fr 2fr;
+  }
+
+  .post .layout-grid .left {
+    order: 1;
+  }
+
+  @media screen and (max-width: 1380px) {
+    .post .layout-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .post .layout-grid .left {
+      order: 0;
+    }
+  }
+
+  @media screen and (max-width: 640px) {
+    .post .layout-grid {
+      margin: 0 1rem;
+      gap: 1rem;
+    }
+  }
+
   .toc-card ol {
     padding: 0;
     display: flex;

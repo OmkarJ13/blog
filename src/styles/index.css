@@ -40,6 +40,7 @@
   border: 1px solid #353535;
   color: #ffffff;
   text-decoration: none;
+  border-radius: 8px;
   transition: background-color .15s ease, border .15s ease;
 }
 
