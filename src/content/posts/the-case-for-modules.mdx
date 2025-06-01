@@ -9,23 +9,24 @@ tags:
 ---
 
 
-JavaScript modules -- something I never really understood, but always pretended I did. Different module systems like ESM and CommonJS confused me even further. The only thing I was clear about is that ES modules are the modern standard. But why? What problems do module systems solve in the first place?
+JavaScript modules — something I never really understood, but always pretended I did. Different module systems like ESM and CommonJS confused me even further. The only thing I was clear about is that ES modules are the modern standard. But why? What problems do module systems solve in the first place?
 
 ### First of all, what even is a module?
-
-Modules make it very easy to break down large and complex codebases into smaller and simpler parts. Without modules, we would have a hard time tackling large codebases.
-
-Unless we're writing a todo app side project, we probably need to split our code into multiple smaller parts for 3 main reasons --
+Unless it's a tiny side project, cramming all of our logic into one big JavaScript file doesn't really work — for three key reasons:
 - Readability
 - Reusability
 - Maintainability
 
+We need some way to break down large codebases into more manageable parts.
+
+Modules make this very easy. 
+
 ### Why not just use plain scripts?
 That explains the need for modules... but wait, if the end goal is just to split large codebases into manageable parts, why not just create multiple JavaScript files and inject them as plain scripts?
 
-That should work, right? So why do we need something like CommonJS or ES modules?
+That should work, right? So why do we need CommonJS or ES modules on top of that?
 
-It is doable, but there are some big problems. Let’s try to find those by looking at what happens without modules.
+Let's see what happens without modules... It's doable, but there are some problems.
 
 When we split code into different scripts that aren’t modules, the scripts don’t get isolated scopes. They share the same global scope.
 
@@ -75,11 +76,11 @@ We can "create" isolation using IIFEs (Immediately Invoked Function Expressions)
 })();
 ```
 
-This gives us the outcome we wanted -- trying to access `message` outside its scope results in a `ReferenceError`.
+This works as expected — trying to access `message` outside its scope results in a `ReferenceError`.
 
 But now we have the opposite problem. Everything is private, but we'd still want to export certain things for reuse.
 
-Without the ability to define exports like we do in modules, managing this is tricky. One way is by assigning the values we want to “export” to the `window` object *(or `global` object in Node.js)*.
+Without the ability to define exports like we do in modules, managing this is tricky. One way is to expose the values we want to export on the `window` object *(or `global` object in Node.js)*.
 
 ```javascript
 // message.js
@@ -96,9 +97,7 @@ Without the ability to define exports like we do in modules, managing this is tr
 })();
 ```
 
-This is a viable option. Libraries like jQuery used to do the same thing back in the day.
-
-This isn’t optimal, though. There are multiple issues:
+This might seem like a viable option, but it comes with several issues:
 
 - How do we handle name collisions on the global object?
 - How do we know who is exporting what?
@@ -123,14 +122,16 @@ This results in `undefined` being printed to the console, because `window.messag
 
 It will be ready for use *only* after the browser finishes executing `message.js`, which in this case happens at the very end.
 
-In our simple example, we only use two scripts, so it may not seem like a big problem. But imagine thousands of files in a large codebase -- it will get very difficult, very fast, to manage the whole thing.
+In our simple example, we only used two scripts. Imagine thousands of files in a large codebase — managing dependencies will get very difficult, very fast.
 
 ### ESM and friends to the rescue
 
 Unsurprisingly, these were the exact challenges developers faced before JavaScript had a standardised module system.
 
-Various custom solutions emerged to fill the gap left by the missing module system -- CommonJS, AMD, and UMD to name a few popular ones. 
+Libraries used IIFEs and exposed values in shared namespaces. jQuery is a classic example — it exposed itself as `window.$`.
+
+Various custom module systems also emerged to fill that gap — CommonJS, AMD (RequireJS), and UMD to name a few.
 
 Eventually, ES6 introduced native module syntax (`import`, `export`), and modern environments like browsers (via `<script type="module">`) and Node started supporting ES modules out of the box.
 
-Exploring how these different module systems work is a whole different blog in itself, but at the core of it they solve the same problem -- *managing code separation and dependencies*.
+Exploring how these different module systems work is a whole different blog in itself, but at the core of it they solve the same problem — *managing code separation and dependencies*.
