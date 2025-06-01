@@ -1,0 +1,136 @@
+---
+title: "The Case for Modules"
+description: "Exploring the why behind JavaScript module systems."
+createdAt: 06-01-2025
+image: "../assets/the-case-for-modules.png"
+draft: false
+tags:
+  - javascript
+---
+
+
+JavaScript modules -- something I never really understood, but always pretended I did. Different module systems like ESM and CommonJS confused me even further. The only thing I was clear about is that ES modules are the modern standard. But why? What problems do module systems solve in the first place?
+
+### First of all, what even is a module?
+
+Modules make it very easy to break down large and complex codebases into smaller and simpler parts. Without modules, we would have a hard time tackling large codebases.
+
+Unless we're writing a todo app side project, we probably need to split our code into multiple smaller parts for 3 main reasons --
+- Readability
+- Reusability
+- Maintainability
+
+### Why not just use plain scripts?
+That explains the need for modules... but wait, if the end goal is just to split large codebases into manageable parts, why not just create multiple JavaScript files and inject them as plain scripts?
+
+That should work, right? So why do we need something like CommonJS or ES modules?
+
+It is doable, but there are some big problems. Let’s try to find those by looking at what happens without modules.
+
+When we split code into different scripts that aren’t modules, the scripts don’t get isolated scopes. They share the same global scope.
+
+```javascript
+// message.js
+const message = 'Hello, world!';
+```
+
+```javascript
+// main.js
+console.log(message);
+```
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Demo</title>
+</head>
+<body>
+    <script src="./message.js"></script>
+    <script src="./main.js"></script>
+</body>
+</html>
+```
+
+Here, “Hello, world!” gets printed to the console, even though `message` is declared in a completely separate script.
+
+Everything is globally available to everyone. That doesn’t seem like a good idea…
+
+Ideally, we’d want to develop in isolation and only share what we explicitly choose to share with other scripts.
+
+We can "create" isolation using IIFEs (Immediately Invoked Function Expressions) to wrap each script’s contents.
+
+```javascript
+// message.js
+(function () {
+  const message = 'Hello, world!';
+})();
+```
+
+```javascript
+// main.js
+(function () {
+  console.log(message);
+})();
+```
+
+This gives us the outcome we wanted -- trying to access `message` outside its scope results in a `ReferenceError`.
+
+But now we have the opposite problem. Everything is private, but we'd still want to export certain things for reuse.
+
+Without the ability to define exports like we do in modules, managing this is tricky. One way is by assigning the values we want to “export” to the `window` object *(or `global` object in Node.js)*.
+
+```javascript
+// message.js
+(function () {
+  const localMessage = 'Hello, world!';
+  window.message = localMessage;
+})();
+```
+
+```javascript
+// main.js
+(function () {
+  console.log(window.message);
+})();
+```
+
+This is a viable option. Libraries like jQuery used to do the same thing back in the day.
+
+This isn’t optimal, though. There are multiple issues:
+
+- How do we handle name collisions on the global object?
+- How do we know who is exporting what?
+
+More importantly, what happens if the load order of the scripts gets messed up?
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Demo</title>
+</head>
+<body>
+    <script src="./main.js"></script>
+    <script src="./message.js"></script>
+</body>
+</html>
+```
+
+This results in `undefined` being printed to the console, because `window.message` is not yet assigned when `main.js` is executed. 
+
+It will be ready for use *only* after the browser finishes executing `message.js`, which in this case happens at the very end.
+
+In our simple example, we only use two scripts, so it may not seem like a big problem. But imagine thousands of files in a large codebase -- it will get very difficult, very fast, to manage the whole thing.
+
+### ESM and friends to the rescue
+
+Unsurprisingly, these were the exact challenges developers faced before JavaScript had a standardised module system.
+
+Various custom solutions emerged to fill the gap left by the missing module system -- CommonJS, AMD, and UMD to name a few popular ones. 
+
+Eventually, ES6 introduced native module syntax (`import`, `export`), and modern environments like browsers (via `<script type="module">`) and Node started supporting ES modules out of the box.
+
+Exploring how these different module systems work is a whole different blog in itself, but at the core of it they solve the same problem -- *managing code separation and dependencies*.
