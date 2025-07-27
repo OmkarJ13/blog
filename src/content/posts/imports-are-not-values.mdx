@@ -71,7 +71,7 @@ console.log(foo);
 
 It prints `"initialValue"` even though the original variable was modified to `"changedValue"`. Why does this happen?
 
-Well, default exports treat the exported value as an expression, not a live binding. 
+Well, default exports treat the exported value as an expression, not a binding. 
 
 This is a feature of the default exports spec, and not a bug, because it allows us to do things like:
 ```javascript
