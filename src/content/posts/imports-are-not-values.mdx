@@ -13,7 +13,7 @@ They are called live bindings.
 
 ### Understanding live bindings
 
-Suppose you have a module which exports a variable like this:
+Suppose you have a module that exports a variable like this:
 
 ```javascript
 // foo.js
@@ -46,7 +46,7 @@ foo = 'changedValue';
 
 This prints `"changedValue"`.
 
-This means the imported `foo` is not just a static copy, but its a reference to the original variable in the exporting module
+This means the imported `foo` is not just a static copy, but it's a reference to the original variable in the exporting module.
 
 It seems obvious, and well, it kind of is. But things get interesting with default exports.
 
@@ -69,7 +69,7 @@ import foo from './foo.js';
 console.log(foo);
 ```
 
-It prints `"initialValue"` even though the original variable was modified to `"changedValue"`. Why did it happen?
+It prints `"initialValue"` even though the original variable was modified to `"changedValue"`. Why does this happen?
 
 Well, default exports treat the exported value as an expression, not a live binding. 
 
@@ -84,31 +84,31 @@ export default 1 + 2;
 
 But it also means that we lose the live connection to the original variable.
 
-Things get weird with function and class declarations though.
+Things get weird with function and class declarations, though.
 
 ### Weird case
 
 If we do:
 ```javascript
 // foo.js
-export default function foo () {
+export default function foo() {
     console.log('hello, world!');
 }
 
 foo = 'changedValue';
 ```
 
-In this case the default import prints `"changedValue"`, how?
+In this case, the default import prints `"changedValue"`. How?
 
-Turns out function and class declarations are an exception to the default exports' "exported as expression" rule. And they're treated as live bindings again.
+It turns out that function and class declarations are an exception to the default exports’ “exported as expression” rule, and they’re treated as live bindings again.
 
 This does not really make sense to me.
 
-If the browser is able to detect if the exported value is a function/class declaration and treat it as a live binding, then exported variables like `export default variable` should've also been a binding. 
+If the browser can detect that the exported value is a function or class declaration and treat it as a live binding, then exported variables such as `export default variable` should also be bindings. 
 
 But it doesn't work this way.
 
-There is a workaround though, to make default exports live.
+There is a workaround, though, to make default exports live.
 
 ### Workaround
 
@@ -122,10 +122,8 @@ export { foo as default };
 foo = 'changedValue';
 ```
 
-This works as expected and prints `"changedValue"`
+This works as expected and prints `"changedValue"`.
 
-In my opinion this is not really intuitive. Default exports don't always behave like normal exports.
+In my opinion, this is not really intuitive. Default exports don't always behave like normal exports.
 
-If someone's unaware of the differences, it can create unintentional bugs in large codebases.
-
-And that's why I am going to stop using default exports as much as possible, and I think you should too!
+That's why I am going to stop using default exports as much as possible, and I think you should, too!
