@@ -16,5 +16,14 @@
     },
     "text": "Linkedin",
     "link": "https://www.linkedin.com/in/omkar-joshi-57286b209/"
+  },
+  {
+    "id": 3,
+    "icon": {
+      "type": "lucide",
+      "name": "twitter"
+    },
+    "text": "Twitter",
+    "link": "https://x.com/JOmkar136286"
   }
 ]
