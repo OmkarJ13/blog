@@ -1,0 +1,101 @@
+
+---
+title: "Building a Javascript Bundler"
+description: "Lessons from building a Javascript bundler from scratch."
+createdAt: 09-07-2025
+image: "../assets/building-a-javascript-bundler.png"
+draft: false
+tags:
+  - javascript
+---
+
+import bundlerTests from '../assets/bundler-tests.png';
+import { Image } from 'astro:assets';
+
+They say the best way to understand anything is to build it from scratch. Well, bundlers have always been a black box for me in the Javascript ecosystem. 
+
+They seem to magically stitch together hundreds of files and make things faster. But how do they actually work? 
+
+This blog covers my journey of trying to build a bundler from scratch to gain a deeper understanding.
+
+### Why bundle?
+First, we should understand why bundlers are even needed.
+
+In my blog ["The case for modules"](https://omkarj.com/blog/the-case-for-modules), I explored the need for modules in Javascript: in short, we need modules to break down our code and manage dependencies. It is simply not feasible to write code in a single file in any serious codebase.
+
+But loading your app this way forces the browser to make multiple network requests, one for each module.
+
+As the number of files being served increases, this can really slow things down.
+
+The fundamental purpose of bundlers is to combine all of these modules into a single file, without changing the underlying code.
+
+Modern bundlers go even further by automatically detecting dead code and applying minification to output the smallest possible bundles.
+
+### Scoping the Bundler
+To build my own bundler, I first checked popular bundlers like Webpack, Rollup, Parcel, and how they work, but quickly got overwhelmed by the sheer number of features they include!
+
+I decided to limit my bundler to a minimal set of crucial features:
+- Support for ES modules
+- Minification
+- Tree-shaking
+- And a basic CLI to interact with.
+
+### Dependency graph
+
+I didn’t want to write the AST parsing/generation logic by myself (which would be very difficult), so I decided to use [Babel](https://babeljs.io/docs/) as it was pretty easy to use and contained everything I needed out of the box.
+
+The bundler gets an entry file path as input. It finds that file and parses the source code into an AST. From that AST, we look for signs of any nested dependencies (imports or exports from other modules).
+
+This keeps happening recursively until the whole dependency graph is traversed.
+
+### Scope Hoisting
+
+For combining the modules into a bundle, I decided to use scope hoisting. 
+
+Here’s a neat article on parcel’s documentation that explains what scope hoisting is: https://parceljs.org/features/scope-hoisting/
+
+In short, scope hoisting tries to combine code from multiple modules into a single scope, so that the bundled code just works rather than having to wrap them in separate functions and then managing references between them using some kind of runtime import polyfill.
+
+Using this approach we minimize any runtime overhead in the final bundle, and we don’t include extra boilerplate that would bloat its size.
+
+But the approach has its challenges as well.
+
+When everything is merged into a single scope, variables with the same names in different modules now conflict with each other. We need some way to make them unique. 
+
+Parcel solves this by renaming top-level variables of each module by prefixing them with a unique ID. 
+
+Rollup solves this by adding $1, $2… $n suffixes to the conflicting variables for the number of times they’ve been conflicted.
+
+I found Rollup’s approach cleaner as it retains readability in the final bundle, so I decided to use a similar approach.
+
+### Tree Shaking
+Next was tree shaking. 
+
+Basically these are the heuristics I used to decide if any given piece of code is unused:
+- Is it used locally?
+- Is it exported?
+    - If yes, is it imported anywhere?
+        - If yes, is the import actually used?
+
+If not, strip it out.
+
+This step was surprisingly fun. There’s something satisfying about eliminating unnecessary code!
+
+### Minification
+Once the bundle was assembled and shaken, I used Babel to apply minification to the final bundle by removing any unnecessary characters.
+
+### Snapshot Tests
+I used Vitest to implement snapshot tests. These tests compare the bundler output in various scenarios with expected results. This was immensely helpful to prevent regressions!
+
+In the end, I had 46 snapshot tests.
+<Image src={bundlerTests} alt="Bundler Tests" style={{ width: "100%", height: "auto" }} />
+
+### Conclusion
+
+Overall, I had a lot of fun building this project. You can find the full source code of the bundler here: https://github.com/OmkarJ13/bundler
+
+Doing this gave me 10x more appreciation for tools like Rollup, Webpack and Parcel.
+
+Still, there are a lot of features that can be added on top of this and contributions are welcome!
+
+Thanks for reading till the end!
