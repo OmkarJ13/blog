@@ -1,7 +1,7 @@
 
 ---
-title: "Building a Javascript Bundler"
-description: "Lessons from building a Javascript bundler from scratch."
+title: "Building a JavaScript Bundler"
+description: "Lessons from building a JavaScript bundler from scratch."
 createdAt: 09-07-2025
 image: "../assets/building-a-javascript-bundler.png"
 draft: false
@@ -12,7 +12,7 @@ tags:
 import bundlerTests from '../assets/bundler-tests.png';
 import { Image } from 'astro:assets';
 
-They say the best way to understand anything is to build it from scratch. Well, bundlers have always been a black box for me in the Javascript ecosystem. 
+They say the best way to understand anything is to build it from scratch. Well, bundlers have always been a black box for me in the JavaScript ecosystem. 
 
 They seem to magically stitch together hundreds of files and make things faster. But how do they actually work? 
 
@@ -21,7 +21,7 @@ This blog covers my journey of trying to build a bundler from scratch to gain a 
 ### Why bundle?
 First, we should understand why bundlers are even needed.
 
-In my blog ["The case for modules"](https://omkarj.com/blog/the-case-for-modules), I explored the need for modules in Javascript: in short, we need modules to break down our code and manage dependencies. It is simply not feasible to write code in a single file in any serious codebase.
+In my blog ["The case for modules"](https://omkarj.com/blog/the-case-for-modules), I explored the need for modules in JavaScript: in short, we need modules to break down our code and manage dependencies. It is simply not feasible to write code in a single file in any serious codebase.
 
 But loading your app this way forces the browser to make multiple network requests, one for each module.
 
